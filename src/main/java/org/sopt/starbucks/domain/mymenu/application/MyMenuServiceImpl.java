@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.starbucks.domain.image.application.ImageService;
 import org.sopt.starbucks.domain.image.domain.Image;
 import org.sopt.starbucks.domain.image.domain.ImagePurpose;
+import org.sopt.starbucks.domain.menu.domain.Menu;
 import org.sopt.starbucks.domain.mymenu.api.HomeMyMenuListResponse;
 import org.sopt.starbucks.domain.mymenu.api.HomeMyMenuResponse;
+import org.sopt.starbucks.domain.mymenu.api.PersonalMenuDetailResponse;
 import org.sopt.starbucks.domain.mymenu.domain.MyMenu;
 import org.sopt.starbucks.domain.mymenu.domain.MyMenuRepository;
+import org.sopt.starbucks.domain.mymenu.domain.Size;
+import org.sopt.starbucks.global.exception.BusinessException;
+import org.sopt.starbucks.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -81,5 +86,52 @@ public class MyMenuServiceImpl implements MyMenuService {
                 .toList();
 
         return new HomeMyMenuListResponse(responses);
+    }
+
+    @Override
+    public PersonalMenuDetailResponse getPersonalMenuDetails(Long myMenuId) {
+
+        // MyMenu 조회
+        MyMenu myMenu = myMenuRepository.findById(myMenuId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MYMENU));
+
+        // MyMenu로부터 Menu 참조
+        Menu menu = myMenu.getMenu();
+
+        // Size별 가격
+        Map<String,Integer> sizePrices = Map.of(
+                "Tall", Size.TALL.getPrice(),
+                "Grande",Size.GRANDE.getPrice(),
+                "Venti",Size.VENTI.getPrice()
+        );
+
+        ImagePurpose imagePurpose;
+
+        // ImagePurpose에 따라 가져오는 사진
+        if(myMenu.getIsHot() == null) {
+            imagePurpose = ImagePurpose.MENU;
+        } else if(myMenu.getIsHot()) {
+            imagePurpose = ImagePurpose.MENU_HOT;
+        } else
+            imagePurpose = ImagePurpose.MENU_ICE;
+
+        String imageUrl=imageService.findByMenuIdAndImagePurpose(menu.getId(),imagePurpose)
+                .map(Image::getImageUrl).orElse("");
+
+        return PersonalMenuDetailResponse.of(
+                menu.getCategory().getName(),
+                myMenu.getId(),
+                menu.getMenuKr(),
+                menu.getMenuEng(),
+                menu.getInfo(),
+                menu.getPrice(),
+                myMenu.getCount(),
+                myMenu.getIsHot(),
+                myMenu.getSize(),
+                sizePrices,
+                myMenu.getPersonalOptions(),
+                imageUrl
+        );
+
     }
 }
