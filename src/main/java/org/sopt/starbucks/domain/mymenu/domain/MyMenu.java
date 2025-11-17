@@ -56,4 +56,24 @@ public class MyMenu {
                 .map(PersonalOption::name)
                 .collect(Collectors.joining(" | "));
     }
+
+    // 최종 가격 합산 메서드
+    public int calculateTotalPrice() {
+        // 기본 가격
+        int total = this.menu.getPrice();
+
+        // 사이즈 가격
+        if (this.size != null) {
+            total += this.size.getPrice();
+        }
+
+        // 퍼스널 옵션 가격 합산
+        if (this.personalOptions != null) {
+            total += this.personalOptions.stream()
+                    .mapToInt(PersonalOption::price)
+                    .sum();
+        }
+
+        return total;
+    }
 }

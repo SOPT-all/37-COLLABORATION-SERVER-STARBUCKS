@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/my-menu")
+@RequestMapping("/api/v1/mymenu")
 @RestController
 public class MyMenuController {
 
@@ -20,6 +20,14 @@ public class MyMenuController {
         HomeMyMenuListResponse homeMyMenuList = myMenuService.findHomeMyMenuList();
         return ResponseEntity.ok(
                 ApiResponse.ok(homeMyMenuList)
+        );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<?>> getListMyMenuList(){
+        ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
+        return ResponseEntity.ok(
+                ApiResponse.ok(listMyMenuList)
         );
     }
 }
