@@ -41,7 +41,7 @@ public class MyMenuServiceImpl implements MyMenuService {
         Map<Long, Map<ImagePurpose, String>> imageMap = images.stream()
                 .collect(Collectors.groupingBy(
                         img -> img.getMenu().getId(), // 1차 Key: 메뉴 ID
-                        Collectors.toMap(             // 2차 Key: 이미지 목적 (Value: URL)
+                        Collectors.toMap(             // 2차 Key: imagePurpose
                                 Image::getImagePurpose,
                                 Image::getImageUrl
                         )
