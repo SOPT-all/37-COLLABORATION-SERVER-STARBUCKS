@@ -18,7 +18,7 @@ public class MyMenuController {
     private final MyMenuService myMenuService;
 
     @GetMapping("/home")
-    public ResponseEntity<ApiResponse<HomeMyMenuListResponse>> getHomeMyMenuList(){
+    public ResponseEntity<ApiResponse<HomeMyMenuListResponse>> getHomeMyMenuList() {
         HomeMyMenuListResponse homeMyMenuList = myMenuService.findHomeMyMenuList();
         return ResponseEntity.ok(
                 ApiResponse.ok(homeMyMenuList)
@@ -26,14 +26,15 @@ public class MyMenuController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId){
+    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId) {
         PersonalMenuDetailResponse response = myMenuService.getPersonalMenuDetails(myMenuId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
-    @GetMapping("/list")
-    public ResponseEntity<ApiResponse<?>> getListMyMenuList(){
-        ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
-        return ResponseEntity.ok(
-                ApiResponse.ok(listMyMenuList)
-        );
+        @GetMapping("/list")
+        public ResponseEntity<ApiResponse<?>> getListMyMenuList () {
+            ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
+            return ResponseEntity.ok(
+                    ApiResponse.ok(listMyMenuList)
+            );
+        }
     }
 }
