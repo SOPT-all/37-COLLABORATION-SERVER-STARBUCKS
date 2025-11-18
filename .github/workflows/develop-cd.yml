@@ -38,8 +38,8 @@ jobs:
           chmod +x gradlew
           ./gradlew clean build -x test
           
-          docker build -t ${{ secrets.DOCKER_NAME }}:latest .
-          docker push ${{ secrets.DOCKER_NAME }}:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_NAME }}:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_NAME }}:latest
 
   deploy:
     if: github.event.pull_request.merged == true
