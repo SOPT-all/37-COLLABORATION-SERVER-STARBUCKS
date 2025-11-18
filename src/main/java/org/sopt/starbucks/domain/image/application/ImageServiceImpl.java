@@ -7,10 +7,11 @@ import org.sopt.starbucks.domain.image.domain.ImageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ImageServiceImpl implements ImageService{
+public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
 
@@ -22,5 +23,10 @@ public class ImageServiceImpl implements ImageService{
     @Override
     public List<Image> findAllByMenuIdInAndImagePurposeIn(List<Long> menuIds, List<ImagePurpose> imagePurposes) {
         return imageRepository.findAllByMenuIdInAndImagePurposeIn(menuIds, imagePurposes);
+    }
+
+    @Override
+    public Optional<Image> findByMenuIdAndImagePurpose(Long menuId, ImagePurpose purpose) {
+        return imageRepository.findByMenuIdAndImagePurpose(menuId, purpose);
     }
 }

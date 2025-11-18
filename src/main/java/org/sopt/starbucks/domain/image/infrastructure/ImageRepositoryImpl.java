@@ -24,4 +24,9 @@ public class ImageRepositoryImpl implements ImageRepository {
     public List<Image> findAllByMenuIdInAndImagePurposeIn(List<Long> menuIds, List<ImagePurpose> imagePurposes) {
         return imageJpaRepository.findAllByMenuIdInAndImagePurposeIn(menuIds, imagePurposes);
     }
+
+    @Override
+    public Optional<Image> findByMenuIdAndImagePurpose(Long menuId, ImagePurpose purpose){
+        return imageJpaRepository.findByMenuIdAndImagePurpose(menuId,purpose);
+    }
 }

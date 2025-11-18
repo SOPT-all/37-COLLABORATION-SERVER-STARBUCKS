@@ -9,4 +9,6 @@ public interface ImageRepository {
 
     // 홈 화면만 타겟팅
     List<Image> findAllByMenuIdInAndImagePurposeIn(List<Long> menuIds, List<ImagePurpose> imagePurposes);
+
+    Optional<Image> findByMenuIdAndImagePurpose(Long menuId, ImagePurpose purpose);
 }

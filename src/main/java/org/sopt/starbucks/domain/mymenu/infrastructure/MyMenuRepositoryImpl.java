@@ -6,6 +6,7 @@ import org.sopt.starbucks.domain.mymenu.domain.MyMenuRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -16,5 +17,10 @@ public class MyMenuRepositoryImpl implements MyMenuRepository {
     @Override
     public List<MyMenu> findAll() {
         return myMenuJpaRepository.findAll();
+    }
+
+    @Override
+    public Optional<MyMenu> findById(Long myMenuId) {
+        return myMenuJpaRepository.findById(myMenuId);
     }
 }
