@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/my-menu")
+@RequestMapping("/api/v1/mymenu")
 @RestController
 public class MyMenuController {
 
@@ -29,5 +29,11 @@ public class MyMenuController {
     public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId){
         PersonalMenuDetailResponse response = myMenuService.getPersonalMenuDetails(myMenuId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<?>> getListMyMenuList(){
+        ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
+        return ResponseEntity.ok(
+                ApiResponse.ok(listMyMenuList)
+        );
     }
 }
