@@ -169,9 +169,9 @@ public class MyMenuServiceImpl implements MyMenuService {
 
         // Size별 가격
         Map<String,Integer> sizePrices = Map.of(
-                "Tall", Size.TALL.getPrice(),
-                "Grande",Size.GRANDE.getPrice(),
-                "Venti",Size.VENTI.getPrice()
+                Size.TALL.getSize(), Size.TALL.getPrice(),
+                Size.GRANDE.getSize(), Size.GRANDE.getPrice(),
+                Size.VENTI.getSize(),Size.VENTI.getPrice()
         );
 
         ImagePurpose imagePurpose;
