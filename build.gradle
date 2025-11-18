@@ -35,7 +35,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // 헬스 체크
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // 테스트 컨테이너용 데이터베이스
     runtimeOnly 'com.h2database:h2'
 }
 
