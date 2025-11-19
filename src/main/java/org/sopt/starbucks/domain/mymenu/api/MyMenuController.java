@@ -26,7 +26,7 @@ public class MyMenuController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId) {
+    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable(name = "id") Long myMenuId) {
         PersonalMenuDetailResponse response = myMenuService.getPersonalMenuDetails(myMenuId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
