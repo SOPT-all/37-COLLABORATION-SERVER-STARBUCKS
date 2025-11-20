@@ -23,7 +23,7 @@ public class MyMenuController {
     }
 
     @GetMapping("/{my-menu-id}")
-    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId) {
+    public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable("my-menu-id") Long myMenuId) {
         PersonalMenuDetailResponse response = myMenuService.getPersonalMenuDetails(myMenuId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
@@ -37,7 +37,7 @@ public class MyMenuController {
         }
 
     @PatchMapping("{my-menu-id}")
-    public ResponseEntity<ApiResponse<PersonalMenuUpdateResponse>> updatePersonalMenuDetails(@PathVariable Long myMenuId, PersonalMenuUpdateRequest request){
+    public ResponseEntity<ApiResponse<PersonalMenuUpdateResponse>> updatePersonalMenuDetails(@PathVariable("my-menu-id") Long myMenuId, PersonalMenuUpdateRequest request){
         PersonalMenuUpdateResponse response = myMenuService.updatePersonalMenuDetails(myMenuId,request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
