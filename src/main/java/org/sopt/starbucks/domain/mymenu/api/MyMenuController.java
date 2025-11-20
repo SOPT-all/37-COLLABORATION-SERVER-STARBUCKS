@@ -5,10 +5,7 @@ import org.sopt.starbucks.domain.mymenu.application.MyMenuService;
 import org.sopt.starbucks.global.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/mymenu")
@@ -25,11 +22,12 @@ public class MyMenuController {
         );
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{my-menu-id}")
     public ResponseEntity<ApiResponse<PersonalMenuDetailResponse>> getPersonalMenuDetails(@PathVariable Long myMenuId) {
         PersonalMenuDetailResponse response = myMenuService.getPersonalMenuDetails(myMenuId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
+
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<?>> getListMyMenuList () {
         ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
@@ -37,4 +35,10 @@ public class MyMenuController {
                 ApiResponse.ok(listMyMenuList)
             );
         }
+
+    @PatchMapping("{my-menu-id}")
+    public ResponseEntity<ApiResponse<PersonalMenuUpdateResponse>> updatePersonalMenuDetails(@PathVariable Long myMenuId, PersonalMenuUpdateRequest request){
+        PersonalMenuUpdateResponse response = myMenuService.updatePersonalMenuDetails(myMenuId,request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+    }
     }

@@ -76,4 +76,17 @@ public class MyMenu {
 
         return total;
     }
+
+    //==업데이트 메서드들==//
+    public void updateIsHot(boolean isHot) {
+        this.isHot = isHot;
+    }
+
+    public void updateSize(Size size) {
+        this.size = size;
+    }
+
+    public void updatePersonalOptions(List<PersonalOption> personalOptions) {
+        this.personalOptions = personalOptions;
+    }
 }
