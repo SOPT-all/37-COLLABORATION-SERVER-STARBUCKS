@@ -5,11 +5,7 @@ import org.sopt.starbucks.domain.image.application.ImageService;
 import org.sopt.starbucks.domain.image.domain.Image;
 import org.sopt.starbucks.domain.image.domain.ImagePurpose;
 import org.sopt.starbucks.domain.menu.domain.Menu;
-import org.sopt.starbucks.domain.mymenu.api.HomeMyMenuListResponse;
-import org.sopt.starbucks.domain.mymenu.api.HomeMyMenuResponse;
-import org.sopt.starbucks.domain.mymenu.api.PersonalMenuDetailResponse;
-import org.sopt.starbucks.domain.mymenu.api.ListMyMenuListResponse;
-import org.sopt.starbucks.domain.mymenu.api.ListMyMenuResponse;
+import org.sopt.starbucks.domain.mymenu.api.*;
 import org.sopt.starbucks.domain.mymenu.domain.MyMenu;
 import org.sopt.starbucks.domain.mymenu.domain.MyMenuRepository;
 import org.sopt.starbucks.domain.mymenu.domain.Size;
@@ -167,31 +163,27 @@ public class MyMenuServiceImpl implements MyMenuService {
         // MyMenu로부터 Menu 참조
         Menu menu = myMenu.getMenu();
 
-        // Size별 가격
-        Map<String,Integer> sizePrices = Map.of(
-                Size.TALL.getSize(), Size.TALL.getPrice(),
-                Size.GRANDE.getSize(), Size.GRANDE.getPrice(),
-                Size.VENTI.getSize(),Size.VENTI.getPrice()
-        );
+        String fullNameKr = getFullNameKr(myMenu,menu);
+        String fullNameEng = getFullNameEng(myMenu,menu);
 
-        ImagePurpose imagePurpose;
+        // 내부 메서드 사용
+        ImagePurpose imagePurpose = determineImagePurpose(myMenu, ImagePurpose.MENU_ICE);
 
-        // ImagePurpose에 따라 가져오는 사진
-        if(myMenu.getIsHot() == null) {
-            imagePurpose = ImagePurpose.MENU;
-        } else if(myMenu.getIsHot()) {
-            imagePurpose = ImagePurpose.MENU_HOT;
-        } else
-            imagePurpose = ImagePurpose.MENU_ICE;
-
-        String imageUrl=imageService.findByMenuIdAndImagePurpose(menu.getId(),imagePurpose)
+        // 이미지 URL 조회
+        String imageUrl = imageService.findByMenuIdAndImagePurpose(menu.getId(), imagePurpose)
                 .map(Image::getImageUrl).orElse("");
+
+        // 내부 메서드 사용
+        Map<String, Integer> sizePrices = createSizePriceMap();
+
+        // 옵션 요약 (온도/사이즈만)
+        String summary = optionSummary(myMenu);
 
         return PersonalMenuDetailResponse.of(
                 menu.getCategory().getName(),
                 myMenu.getId(),
-                menu.getMenuKr(),
-                menu.getMenuEng(),
+                fullNameKr,
+                fullNameEng,
                 menu.getInfo(),
                 menu.getPrice(),
                 myMenu.getCount(),
@@ -199,8 +191,86 @@ public class MyMenuServiceImpl implements MyMenuService {
                 myMenu.getSize(),
                 sizePrices,
                 myMenu.getPersonalOptions(),
+                summary,
                 imageUrl
         );
 
+    }
+
+
+    private String getFullNameKr(MyMenu myMenu, Menu menu) {
+        if (myMenu.getIsHot() == null) {
+            // 음식은 접두사 없음
+            return menu.getMenuKr();
+        } else if (myMenu.getIsHot()) {
+            return "핫 " + menu.getMenuKr();
+        } else {
+            return "아이스 " + menu.getMenuKr();
+        }
+    }
+
+    private String getFullNameEng(MyMenu myMenu, Menu menu) {
+        if (myMenu.getIsHot() == null) {
+            // 음식은 접두사 없음
+            return menu.getMenuEng();
+        } else if (myMenu.getIsHot()) {
+            return "Hot " + menu.getMenuEng();
+        } else {
+            return "Iced " + menu.getMenuEng();
+        }
+    }
+
+    // Size별 가격
+    private Map<String, Integer> createSizePriceMap() {
+        return Map.of(
+                Size.TALL.getSize(), Size.TALL.getPrice(),
+                Size.GRANDE.getSize(), Size.GRANDE.getPrice(),
+                Size.VENTI.getSize(), Size.VENTI.getPrice()
+        );
+    }
+
+    // 옵션 요약 (온도|사이즈) 만
+    private String optionSummary(MyMenu myMenu) {
+        StringBuilder sb = new StringBuilder();
+        if (myMenu.getIsHot() != null) {
+            sb.append(myMenu.getIsHot() ? "HOT | " : "ICED | ");
+        }
+        if(myMenu.getSize() != null) {
+            sb.append(myMenu.getSize().getSize());
+        }
+        return sb.toString();
+    }
+
+    @Transactional
+    public PersonalMenuUpdateResponse updatePersonalMenuDetails(Long myMenuId,PersonalMenuUpdateRequest request) {
+
+        // 1. 나만의 메뉴 가져오기
+        MyMenu mymenu = myMenuRepository.findById(myMenuId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MYMENU));
+
+        // 2. Hot,Ice에 따라 상태 저장하기
+
+        if(request.isHot() != null){
+            mymenu.updateIsHot(request.isHot());
+        }
+
+        // 3. 사이즈 저장하기
+        if(request.size() != null) {
+            mymenu.updateSize(request.size());
+        }
+
+        // 4. 요약 저장하기
+        String summary = optionSummary(mymenu);
+
+        // 5. 옵션 저장하기
+        if(request.personalOptions() != null) {
+            mymenu.updatePersonalOptions(request.personalOptions());
+        }
+
+        return PersonalMenuUpdateResponse.of(mymenu.getId(),
+                mymenu.getIsHot(),
+                mymenu.getSize(),
+                summary,
+                mymenu.getPersonalOptions());
     }
 }
