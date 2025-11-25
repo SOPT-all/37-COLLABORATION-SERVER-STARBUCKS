@@ -163,15 +163,40 @@ public class MyMenuServiceImpl implements MyMenuService {
         // MyMenu로부터 Menu 참조
         Menu menu = myMenu.getMenu();
 
-        String fullNameKr = getFullNameKr(myMenu,menu);
-        String fullNameEng = getFullNameEng(myMenu,menu);
+        String hotMenuKr = null;
+        String hotMenuEng = null;
+        String iceMenuKr = null;
+        String iceMenuEng = null;
+        String hotMenuImageUrl = "";
+        String iceMenuImageUrl = "";
 
-        // 내부 메서드 사용
-        ImagePurpose imagePurpose = determineImagePurpose(myMenu, ImagePurpose.MENU_ICE);
+        // 카테고리가 DRINK인 경우에만 HOT/ICE 구분
+        if ("DRINK".equals(menu.getCategory().getName())) {
+            // HOT/ICE 이름 생성
+            hotMenuKr = "핫 " + menu.getMenuKr();
+            hotMenuEng = "Hot " + menu.getMenuEng();
+            iceMenuKr = "아이스 " + menu.getMenuKr();
+            iceMenuEng = "Iced " + menu.getMenuEng();
 
-        // 이미지 URL 조회
-        String imageUrl = imageService.findByMenuIdAndImagePurpose(menu.getId(), imagePurpose)
-                .map(Image::getImageUrl).orElse("");
+            // HOT/ICE 이미지 조회
+            hotMenuImageUrl = imageService.findByMenuIdAndImagePurpose(menu.getId(), ImagePurpose.MENU_HOT)
+                    .map(Image::getImageUrl)
+                    .orElse("");
+
+            iceMenuImageUrl = imageService.findByMenuIdAndImagePurpose(menu.getId(), ImagePurpose.MENU_ICE)
+                    .map(Image::getImageUrl)
+                    .orElse("");
+        } else {
+            // FOOD인 경우 온도 구분 없이 기본 이름만
+            hotMenuKr = menu.getMenuKr();
+            hotMenuEng = menu.getMenuEng();
+
+            // FOOD 이미지 조회
+            hotMenuImageUrl = imageService.findByMenuIdAndImagePurpose(menu.getId(), ImagePurpose.MENU)
+                    .map(Image::getImageUrl)
+                    .orElse("");
+        }
+
 
         // 내부 메서드 사용
         Map<String, Integer> sizePrices = createSizePriceMap();
@@ -182,8 +207,12 @@ public class MyMenuServiceImpl implements MyMenuService {
         return PersonalMenuDetailResponse.of(
                 menu.getCategory().getName(),
                 myMenu.getId(),
-                fullNameKr,
-                fullNameEng,
+                hotMenuKr,
+                hotMenuEng,
+                hotMenuImageUrl,
+                iceMenuKr,
+                iceMenuEng,
+                iceMenuImageUrl,
                 menu.getInfo(),
                 menu.getPrice(),
                 myMenu.getCount(),
@@ -191,34 +220,10 @@ public class MyMenuServiceImpl implements MyMenuService {
                 myMenu.getSize(),
                 sizePrices,
                 myMenu.getPersonalOptions(),
-                summary,
-                imageUrl
+                summary
         );
-
     }
 
-
-    private String getFullNameKr(MyMenu myMenu, Menu menu) {
-        if (myMenu.getIsHot() == null) {
-            // 음식은 접두사 없음
-            return menu.getMenuKr();
-        } else if (myMenu.getIsHot()) {
-            return "핫 " + menu.getMenuKr();
-        } else {
-            return "아이스 " + menu.getMenuKr();
-        }
-    }
-
-    private String getFullNameEng(MyMenu myMenu, Menu menu) {
-        if (myMenu.getIsHot() == null) {
-            // 음식은 접두사 없음
-            return menu.getMenuEng();
-        } else if (myMenu.getIsHot()) {
-            return "Hot " + menu.getMenuEng();
-        } else {
-            return "Iced " + menu.getMenuEng();
-        }
-    }
 
     // Size별 가격
     private Map<String, Integer> createSizePriceMap() {
