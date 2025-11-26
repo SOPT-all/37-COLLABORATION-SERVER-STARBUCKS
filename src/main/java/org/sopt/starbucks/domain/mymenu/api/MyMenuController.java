@@ -29,7 +29,7 @@ public class MyMenuController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<?>> getListMyMenuList () {
+    public ResponseEntity<ApiResponse<ListMyMenuListResponse>> getListMyMenuList () {
         ListMyMenuListResponse listMyMenuList = myMenuService.findListMyMenuList();
         return ResponseEntity.ok(
                 ApiResponse.ok(listMyMenuList)

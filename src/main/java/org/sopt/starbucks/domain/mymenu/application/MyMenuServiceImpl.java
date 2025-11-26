@@ -82,6 +82,7 @@ public class MyMenuServiceImpl implements MyMenuService {
 
                     return ListMyMenuResponse.of(
                             myMenu.getId(),
+                            myMenu.getMenu().getCategory().getName(),
                             myMenu.getCustomName(),
                             prefixName + myMenu.getMenu().getMenuKr(),
                             optionSummary,
