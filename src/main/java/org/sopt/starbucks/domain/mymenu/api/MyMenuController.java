@@ -41,4 +41,10 @@ public class MyMenuController {
         PersonalMenuUpdateResponse response = myMenuService.updatePersonalMenuDetails(myMenuId,request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
+
+    @GetMapping("/reset")
+    public ResponseEntity<ApiResponse<Void>> resetPersonalMenu() {
+        myMenuService.resetPersonalMenuDetails(1L);
+        return ResponseEntity.ok().body(ApiResponse.ok(null));
     }
+}

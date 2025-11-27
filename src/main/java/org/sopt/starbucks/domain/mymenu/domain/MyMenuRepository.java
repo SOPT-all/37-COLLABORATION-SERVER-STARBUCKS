@@ -7,4 +7,5 @@ public interface MyMenuRepository {
 
     List<MyMenu> findAll();
     Optional<MyMenu> findById(Long myMenuId);
+    void save(MyMenu myMenu);
 }

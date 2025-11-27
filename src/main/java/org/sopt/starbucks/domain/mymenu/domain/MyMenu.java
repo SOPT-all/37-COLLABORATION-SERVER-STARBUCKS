@@ -89,4 +89,18 @@ public class MyMenu {
     public void updatePersonalOptions(List<PersonalOption> personalOptions) {
         this.personalOptions = personalOptions;
     }
+
+    public void resetMyMenuDetails() {
+        this.isHot = false;
+        this.size = Size.TALL;
+        this.personalOptions = List.of(
+                new PersonalOption("바닐라 시럽2", 800),
+                new PersonalOption("로즈마리 없이", 0),
+                new PersonalOption("얼음 적게", 0),
+                new PersonalOption("일반 휘핑 많이", 800),
+                new PersonalOption("핑크 리치 보바 없이", 0)
+        );
+        this.customName = "상큼발랄 프레셔";
+        this.count = 100;
+    }
 }

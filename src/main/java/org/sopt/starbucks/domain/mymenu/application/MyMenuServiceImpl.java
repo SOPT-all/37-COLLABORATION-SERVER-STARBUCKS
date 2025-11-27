@@ -279,4 +279,15 @@ public class MyMenuServiceImpl implements MyMenuService {
                 summary,
                 mymenu.getPersonalOptions());
     }
+
+    @Override
+    @Transactional
+    public void resetPersonalMenuDetails(Long myMenuId) {
+
+        MyMenu myMenu = myMenuRepository.findById(myMenuId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MYMENU));
+
+        myMenu.resetMyMenuDetails();
+        myMenuRepository.save(myMenu);
+    }
 }
