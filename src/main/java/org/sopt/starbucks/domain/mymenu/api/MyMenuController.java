@@ -37,7 +37,7 @@ public class MyMenuController {
         }
 
     @PatchMapping("{my-menu-id}")
-    public ResponseEntity<ApiResponse<PersonalMenuUpdateResponse>> updatePersonalMenuDetails(@PathVariable("my-menu-id") Long myMenuId, PersonalMenuUpdateRequest request){
+    public ResponseEntity<ApiResponse<PersonalMenuUpdateResponse>> updatePersonalMenuDetails(@PathVariable("my-menu-id") Long myMenuId, @RequestBody PersonalMenuUpdateRequest request){
         PersonalMenuUpdateResponse response = myMenuService.updatePersonalMenuDetails(myMenuId,request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
