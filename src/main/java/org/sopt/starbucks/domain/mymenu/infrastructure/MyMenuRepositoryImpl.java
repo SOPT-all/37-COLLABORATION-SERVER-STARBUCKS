@@ -23,4 +23,9 @@ public class MyMenuRepositoryImpl implements MyMenuRepository {
     public Optional<MyMenu> findById(Long myMenuId) {
         return myMenuJpaRepository.findById(myMenuId);
     }
+
+    @Override
+    public void save(MyMenu myMenu) {
+        myMenuJpaRepository.save(myMenu);
+    }
 }
